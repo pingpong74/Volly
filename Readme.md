@@ -1,3 +1,3 @@
-#Vulkan abstraction layer
+Vulkan abstraction layer
 
 Thin vulkan abstraction layer
