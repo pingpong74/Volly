@@ -14,6 +14,14 @@ namespace Volly {
         uint32_t height;
     };
 
+    struct BufferCreateInfo {
+
+    };
+
+    struct ImageCreateInfo {
+
+    };
+
     class Device {
         public:
         class DeviceImpl;

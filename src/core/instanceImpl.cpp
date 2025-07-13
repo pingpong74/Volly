@@ -48,8 +48,6 @@ Volly::Instance::InstanceImpl::InstanceImpl(const Volly::InstanceCreateInfo& ins
 
 	volkLoadInstance(handle);
 	if(validationLayersEnabled) setupDebugMessenger();
-
-	selectPhysicalDevice();
 }
 
 Volly::Instance::InstanceImpl::~InstanceImpl() {
@@ -175,7 +173,7 @@ Volly::Device Volly::Instance::InstanceImpl::createDevice(const DeviceCreateInfo
         createInfo.ppEnabledLayerNames = validationLayers;
 	}
 
-	std::unique_ptr<Volly::Device::DeviceImpl> deviceImpl = std::make_unique<Volly::Device::DeviceImpl>(createInfo, physicalDevice);
+	std::unique_ptr<Volly::Device::DeviceImpl> deviceImpl = std::make_unique<Volly::Device::DeviceImpl>(handle, createInfo, physicalDevice);
 
     return Device(std::move(deviceImpl));
 }

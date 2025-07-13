@@ -3,15 +3,36 @@
 #include "core/swapchain.hpp"
 #include "instanceImpl.hpp"
 #include "swapchainImpl.hpp"
+#include "voxyConfig.hpp"
+
 #include <limits>
 #include <algorithm>
 #include <memory>
+#include <volk/volk.h>
+#include <vma/vk_mem_alloc.h>
 
-Volly::Device::DeviceImpl::DeviceImpl(VkDeviceCreateInfo deviceCreateInfo, PhysicalDevice physicalDevice): physicalDevice(physicalDevice) {
+Volly::Device::DeviceImpl::DeviceImpl(VkInstance instance, VkDeviceCreateInfo deviceCreateInfo, PhysicalDevice physicalDevice): physicalDevice(physicalDevice) {
     VK_CHECK(vkCreateDevice(physicalDevice.handle, &deviceCreateInfo, nullptr, &handle), "Failed to create logical device")
+    volkLoadDevice(handle);
+
+    VmaVulkanFunctions vulkanFunctions = {};
+    vulkanFunctions.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
+    vulkanFunctions.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
+    VmaAllocatorCreateInfo allocatorCreateInfo = {};
+    allocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
+    allocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_2;
+    allocatorCreateInfo.physicalDevice = physicalDevice.handle;
+    allocatorCreateInfo.device = handle;
+    allocatorCreateInfo.instance = instance;
+    allocatorCreateInfo.pVulkanFunctions = &vulkanFunctions;
+
+    VK_CHECK(vmaImportVulkanFunctionsFromVolk(&allocatorCreateInfo, &vulkanFunctions), "Failed to load vma functions from volk");
+
+    VK_CHECK(vmaCreateAllocator(&allocatorCreateInfo, &vmaAllocator), "Failed to create vma allocator");
 }
 
 Volly::Device::DeviceImpl::~DeviceImpl() {
+    vmaDestroyAllocator(vmaAllocator);
     vkDestroyDevice(handle, nullptr);
 }
 
