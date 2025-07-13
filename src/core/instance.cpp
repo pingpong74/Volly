@@ -24,3 +24,5 @@ Volly::Instance Volly::Instance::create(const Volly::InstanceCreateInfo&& instan
 Volly::Device Volly::Instance::createDevice(const Volly::DeviceCreateInfo&& deviceCreateInfo) {
     return impl->createDevice(deviceCreateInfo);
 }
+
+VkSurfaceKHR Volly::Instance::getSurface() { return impl->getSurface(); }

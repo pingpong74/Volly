@@ -25,6 +25,8 @@ namespace Volly {
     class Instance {
         public:
 
+        class InstanceImpl;
+
         static Instance create(const InstanceCreateInfo&& instanceCreateInfo);
         Instance(Instance&&) noexcept;
         Instance(const Instance&) = delete;
@@ -34,8 +36,7 @@ namespace Volly {
         ~Instance();
 
         Device createDevice(const DeviceCreateInfo&& deviceCreateInfo);
-
-        class InstanceImpl;
+        VkSurfaceKHR getSurface();
 
         private:
 

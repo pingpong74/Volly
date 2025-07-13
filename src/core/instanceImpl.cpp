@@ -107,7 +107,7 @@ Volly::PhysicalDevice Volly::Instance::InstanceImpl::selectPhysicalDevice() {
         if(score > max) {
             bestPhysicalDevice = {
                 .handle = physicalDevice,
-                .swapvhainSupportDetails = details,
+                .swapchainSupportDetails = details,
                 .queueFamilIndices = queueFamilyIndex,
             };
             max = score;

@@ -15,6 +15,7 @@ namespace Volly {
         ~Window();
 
         void update();
+        inline bool shouldClose() { return glfwWindowShouldClose(windowPtr); }
 
         std::vector<const char*> getRequiredExtensions();
         VkSurfaceKHR createSurface(VkInstance instance);

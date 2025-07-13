@@ -2,10 +2,10 @@
 
 #include "core/device.hpp"
 #include <core/instance.hpp>
-#include <memory>
 #include <volk/volk.h>
 #include <voxyConfig.hpp>
 #include <optional>
+#include <vulkan/vulkan_core.h>
 
 namespace Volly {
 
@@ -32,7 +32,7 @@ namespace Volly {
 
     struct PhysicalDevice {
         VkPhysicalDevice handle;
-        SwapChainSupportDetails swapvhainSupportDetails;
+        SwapChainSupportDetails swapchainSupportDetails;
         QueueFamilyIndices queueFamilIndices;
     };
 
@@ -42,6 +42,7 @@ namespace Volly {
         ~InstanceImpl();
 
         Device createDevice(const DeviceCreateInfo& deviceCreateInfo);
+        inline VkSurfaceKHR getSurface() { return surface; }
 
         private:
 

@@ -1,6 +1,18 @@
 #include <core/device.hpp>
+#include "core/swapchain.hpp"
 #include "deviceImpl.hpp"
 #include <memory>
 
-Volly::Device::Device(std::unique_ptr<Device::DeviceImpl> impl): impl(std::move(impl)) {}
+Volly::Device::Device(std::unique_ptr<Volly::Device::DeviceImpl> impl): impl(std::move(impl)) {}
+Volly::Device::Device(Device&& other) noexcept : impl(std::move(other.impl)) {}
+
+Volly::Device& Volly::Device::operator=(Device&& other) noexcept {
+    impl = std::move(other.impl);
+    return *this;
+}
+
 Volly::Device::~Device() {}
+
+Volly::Swapchain Volly::Device::createSwapchain(const SwapchainCreateInfo&& swapchainCreateInfo) {
+    return impl->createSwapchain(swapchainCreateInfo);
+}
