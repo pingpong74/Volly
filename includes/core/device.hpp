@@ -1,7 +1,8 @@
 #pragma once
 
-#include "core/instance.hpp"
-#include "core/swapchain.hpp"
+#include "resources/gpuResources.hpp"
+#include <core/instance.hpp>
+#include <core/swapchain.hpp>
 #include <memory>
 #include <vulkan/vulkan_core.h>
 
@@ -35,6 +36,9 @@ namespace Volly {
         ~Device();
 
         Swapchain createSwapchain(const SwapchainCreateInfo&& swapchainCreateInfo);
+
+        BufferID createBuffer(const BufferCreateInfo&& bufferCreateInfo);
+        ImangeID createImage(const ImageCreateInfo&& imageCreateInfo);
 
         private:
 

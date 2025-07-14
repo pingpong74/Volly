@@ -3,7 +3,7 @@
 #include <core/device.hpp>
 #include <core/swapchain.hpp>
 #include "instanceImpl.hpp"
-#include <resources/gpuResources.hpp>
+#include "../resources/gpuResourcesImpl.hpp"
 
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
