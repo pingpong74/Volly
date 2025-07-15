@@ -1,6 +1,7 @@
 #include "core/device.hpp"
 #include "core/swapchain.hpp"
 #include "core/window.hpp"
+#include "resources/gpuResources.hpp"
 #include <core/instance.hpp>
 
 int main() {
@@ -20,5 +21,13 @@ int main() {
         .surface = instance.getSurface(),
         .width = 800,
         .height = 600,
+    });
+
+    Volly::BufferID id = device.createBuffer({
+        .name = "Test Buffer",
+        .size = 10,
+        .usageFlags = Volly::transferSrc,
+        .memoryUsage = Volly::preferAuto,
+        .allocationFlags = Volly::createDedicated,
     });
 }

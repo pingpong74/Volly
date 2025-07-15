@@ -3,6 +3,11 @@
 #include "deviceImpl.hpp"
 #include <memory>
 
+Volly::BufferUsageFlags& Volly::BufferUsageFlags::operator|(Volly::BufferUsageFlags& other) noexcept  {
+    flags |= other.flags;
+    return *this;
+}
+
 Volly::Device::Device(std::unique_ptr<Volly::Device::DeviceImpl> impl): impl(std::move(impl)) {}
 Volly::Device::Device(Device&& other) noexcept : impl(std::move(other.impl)) {}
 
@@ -15,4 +20,8 @@ Volly::Device::~Device() {}
 
 Volly::Swapchain Volly::Device::createSwapchain(const SwapchainCreateInfo&& swapchainCreateInfo) {
     return impl->createSwapchain(swapchainCreateInfo);
+}
+
+Volly::BufferID Volly::Device::createBuffer(const BufferCreateInfo&& createInfo) {
+    return impl->createBuffer(createInfo);
 }

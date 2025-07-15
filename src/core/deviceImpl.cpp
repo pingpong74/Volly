@@ -2,6 +2,7 @@
 #include "core/device.hpp"
 #include "core/swapchain.hpp"
 #include "instanceImpl.hpp"
+#include "resources/gpuResources.hpp"
 #include "swapchainImpl.hpp"
 #include "voxyConfig.hpp"
 
@@ -10,6 +11,7 @@
 #include <memory>
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
+#include <iostream>
 
 Volly::Device::DeviceImpl::DeviceImpl(VkInstance instance, VkDeviceCreateInfo deviceCreateInfo, PhysicalDevice physicalDevice): physicalDevice(physicalDevice) {
     VK_CHECK(vkCreateDevice(physicalDevice.handle, &deviceCreateInfo, nullptr, &handle), "Failed to create logical device")
@@ -80,6 +82,9 @@ Volly::Swapchain Volly::Device::DeviceImpl::createSwapchain(const SwapchainCreat
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 	createInfo.surface = swapchainCreateInfo.surface;
 	createInfo.minImageCount = imageCount;
+	createInfo.preTransform = physicalDevice.swapchainSupportDetails.capabilities.currentTransform;
+	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
 	uint32_t queues[] = {physicalDevice.queueFamilIndices.graphicsFamily.value(), physicalDevice.queueFamilIndices.presentationFamily.value()};
 
@@ -94,16 +99,48 @@ Volly::Swapchain Volly::Device::DeviceImpl::createSwapchain(const SwapchainCreat
         createInfo.pQueueFamilyIndices = nullptr;
 	}
 
-	createInfo.preTransform = physicalDevice.swapchainSupportDetails.capabilities.currentTransform;
-
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-
-	createInfo.oldSwapchain = VK_NULL_HANDLE;
-
 	VkSwapchainKHR swapchain;
 	VK_CHECK(vkCreateSwapchainKHR(handle, &createInfo, nullptr, &swapchain), "Failed to create swapchain")
 
 	std::unique_ptr<Volly::Swapchain::SwapchainImpl> swapchainImpl = std::make_unique<Volly::Swapchain::SwapchainImpl>(swapchain, handle);
 
 	return Swapchain(std::move(swapchainImpl));
+}
+
+Volly::BufferID Volly::Device::DeviceImpl::createBuffer(const BufferCreateInfo& createInfo) {
+    VkBufferCreateInfo bufferCreateInfo = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .pNext = nullptr,
+        .flags   = createInfo.createFlags.flags,
+        .size = createInfo.size,
+        .usage = createInfo.usageFlags.flags,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+        .queueFamilyIndexCount = 0,
+        .pQueueFamilyIndices = nullptr,
+    };
+
+    VmaAllocationCreateInfo allocInfo = {
+        .flags = createInfo.allocationFlags.flags,
+        .usage = createInfo.memoryUsage.usage,
+        .requiredFlags = 0,
+        .preferredFlags = 0,
+        .pool = VK_NULL_HANDLE,
+    };
+
+    VkBuffer buffer;
+    VmaAllocation bufferAllocation;
+    VmaAllocationInfo bufferAllocInfo;
+
+    //VK_CHECK(vkCreateBuffer(handle, &bufferCreateInfo, nullptr, &buffer), "Failed to oike")
+    VK_CHECK(vmaCreateBuffer(vmaAllocator, &bufferCreateInfo, &allocInfo, &buffer, &bufferAllocation, &bufferAllocInfo), "Failed to create buffer")
+
+    GpuResourceID id = bufferPool.createSlot({
+        .handle = buffer,
+        .bufferAllocation = bufferAllocation,
+        .bufferAllocationInfo = bufferAllocInfo,
+    });
+
+    std::cout << "oinke" << std::endl;
+
+    return {};
 }
