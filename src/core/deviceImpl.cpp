@@ -1,17 +1,19 @@
+#include <core/device.hpp>
+#include <core/swapchain.hpp>
+#include <resources/gpuResources.hpp>
+#include <voxyConfig.hpp>
+
+#include "../resources/gpuResourcesImpl.hpp"
 #include "deviceImpl.hpp"
-#include "core/device.hpp"
-#include "core/swapchain.hpp"
 #include "instanceImpl.hpp"
-#include "resources/gpuResources.hpp"
 #include "swapchainImpl.hpp"
-#include "voxyConfig.hpp"
 
 #include <limits>
 #include <algorithm>
 #include <memory>
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
-#include <iostream>
+#include <vulkan/vulkan_core.h>
 
 Volly::Device::DeviceImpl::DeviceImpl(VkInstance instance, VkDeviceCreateInfo deviceCreateInfo, PhysicalDevice physicalDevice): physicalDevice(physicalDevice) {
     VK_CHECK(vkCreateDevice(physicalDevice.handle, &deviceCreateInfo, nullptr, &handle), "Failed to create logical device")
@@ -70,21 +72,22 @@ Volly::Swapchain Volly::Device::DeviceImpl::createSwapchain(const SwapchainCreat
 	    imageCount = physicalDevice.swapchainSupportDetails.capabilities.maxImageCount;
 	}
 
-	VkSwapchainCreateInfoKHR createInfo{};
-
-	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.imageFormat = swapchainFormat.format;
-	createInfo.imageColorSpace = swapchainFormat.colorSpace;
-	createInfo.imageExtent = swapchainExtent;
-	createInfo.presentMode = swapchainPresentMode;
-	createInfo.clipped = VK_TRUE;
-	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-	createInfo.surface = swapchainCreateInfo.surface;
-	createInfo.minImageCount = imageCount;
-	createInfo.preTransform = physicalDevice.swapchainSupportDetails.capabilities.currentTransform;
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	createInfo.oldSwapchain = VK_NULL_HANDLE;
+	VkSwapchainCreateInfoKHR createInfo = {
+	    .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+	    .pNext = nullptr,
+	    .surface = swapchainCreateInfo.surface,
+	    .minImageCount = imageCount,
+	    .imageFormat = swapchainFormat.format,
+	    .imageColorSpace = swapchainFormat.colorSpace,
+	    .imageExtent = swapchainExtent,
+	    .imageArrayLayers = 1,
+	    .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+	    .preTransform = physicalDevice.swapchainSupportDetails.capabilities.currentTransform,
+	    .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+	    .presentMode = swapchainPresentMode,
+	    .clipped = VK_TRUE,
+	    .oldSwapchain = VK_NULL_HANDLE,
+	};
 
 	uint32_t queues[] = {physicalDevice.queueFamilIndices.graphicsFamily.value(), physicalDevice.queueFamilIndices.presentationFamily.value()};
 
@@ -127,20 +130,14 @@ Volly::BufferID Volly::Device::DeviceImpl::createBuffer(const BufferCreateInfo& 
         .pool = VK_NULL_HANDLE,
     };
 
-    VkBuffer buffer;
-    VmaAllocation bufferAllocation;
-    VmaAllocationInfo bufferAllocInfo;
+    std::shared_ptr<Buffer> bufferImpl = std::make_shared<Buffer>(bufferCreateInfo, allocInfo, vmaAllocator);
 
-    //VK_CHECK(vkCreateBuffer(handle, &bufferCreateInfo, nullptr, &buffer), "Failed to oike")
-    VK_CHECK(vmaCreateBuffer(vmaAllocator, &bufferCreateInfo, &allocInfo, &buffer, &bufferAllocation, &bufferAllocInfo), "Failed to create buffer")
+    return BufferID(bufferImpl);
+}
 
-    GpuResourceID id = bufferPool.createSlot({
-        .handle = buffer,
-        .bufferAllocation = bufferAllocation,
-        .bufferAllocationInfo = bufferAllocInfo,
-    });
-
-    std::cout << "oinke" << std::endl;
-
-    return {};
+Volly::ImageID Volly::Device::DeviceImpl::createImage(const ImageCreateInfo& createInfo) {
+    VkImageCreateInfo imageCreateInfo{};
+    imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    imageCreateInfo.extent = {createInfo.width, createInfo.height, 1};
+    imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 }

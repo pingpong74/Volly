@@ -1,6 +1,7 @@
 #pragma once
 
 #include "resources/gpuResources.hpp"
+#include "voxyConfig.hpp"
 #include <core/instance.hpp>
 #include <core/swapchain.hpp>
 #include <memory>
@@ -11,8 +12,8 @@ namespace Volly {
     struct SwapchainCreateInfo {
         const char* name;
         VkSurfaceKHR surface;
-        uint32_t width;
-        uint32_t height;
+        uint32_t width = initialWidth;
+        uint32_t height = initialHeight;
     };
 
     struct BufferCreateFlags {
@@ -22,7 +23,7 @@ namespace Volly {
     struct BufferUsageFlags {
         VkBufferUsageFlags flags;
 
-        BufferUsageFlags& operator|(BufferUsageFlags& other) noexcept;
+        BufferUsageFlags operator|(const BufferUsageFlags& other) const noexcept;
     };
 
     static constexpr BufferUsageFlags transferSrc = {VK_BUFFER_USAGE_TRANSFER_SRC_BIT};
@@ -42,9 +43,15 @@ namespace Volly {
 
     struct AllocationCreateFlags {
         VmaAllocationCreateFlags flags;
+
+        AllocationCreateFlags operator|(const AllocationCreateFlags& other) const noexcept;
     };
 
+    static constexpr AllocationCreateFlags createMapped = {VMA_ALLOCATION_CREATE_MAPPED_BIT};
+    static constexpr AllocationCreateFlags sequenctialWriteBit = {VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT};
+    static constexpr AllocationCreateFlags randomAccessBit = {VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT};
     static constexpr AllocationCreateFlags createDedicated = {VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT};
+    static constexpr AllocationCreateFlags createNeverAllocated = {VMA_ALLOCATION_CREATE_NEVER_ALLOCATE_BIT};
 
     struct BufferCreateInfo {
         const char* name;
@@ -53,6 +60,12 @@ namespace Volly {
         BufferUsageFlags usageFlags;
         MemoryUsage memoryUsage;
         AllocationCreateFlags allocationFlags;
+    };
+
+    struct ImageCreateInfo {
+        const char* name;
+        uint32_t width;
+        uint32_t height;
     };
 
     class Device {
@@ -70,6 +83,7 @@ namespace Volly {
         Swapchain createSwapchain(const SwapchainCreateInfo&& swapchainCreateInfo);
 
         BufferID createBuffer(const BufferCreateInfo&& bufferCreateInfo);
+        ImageID createImage(const ImageCreateInfo&& imageCreateInfo);
 
         private:
 

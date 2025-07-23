@@ -11,3 +11,6 @@
 
 constexpr uint32_t validationLayersCount = 1;
 constexpr const char* validationLayers[] = { "VK_LAYER_KHRONOS_validation" };
+
+constexpr uint32_t initialWidth = 800;
+constexpr uint32_t initialHeight = 600;

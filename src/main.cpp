@@ -1,8 +1,5 @@
 #include "core/device.hpp"
-#include "core/swapchain.hpp"
-#include "core/window.hpp"
-#include "resources/gpuResources.hpp"
-#include <core/instance.hpp>
+#include <volly.hpp>
 
 int main() {
     Volly::Window window("Oinke Poinke");
@@ -10,6 +7,7 @@ int main() {
     Volly::Instance instance = Volly::Instance::create({
         .name = "Oinke Instance",
         .window = window,
+        .enableValidationLayers = false
     });
 
     Volly::Device device = instance.createDevice({
@@ -19,15 +17,13 @@ int main() {
     Volly::Swapchain swapchain = device.createSwapchain({
         .name = "Main swapchian",
         .surface = instance.getSurface(),
-        .width = 800,
-        .height = 600,
     });
 
     Volly::BufferID id = device.createBuffer({
         .name = "Test Buffer",
-        .size = 10,
-        .usageFlags = Volly::transferSrc,
+        .size = 100,
+        .usageFlags = Volly::transferSrc ,
         .memoryUsage = Volly::preferAuto,
-        .allocationFlags = Volly::createDedicated,
+        .allocationFlags = Volly::createMapped | Volly::sequenctialWriteBit,
     });
 }

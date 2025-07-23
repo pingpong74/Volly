@@ -3,14 +3,14 @@
 #include <core/device.hpp>
 #include <core/swapchain.hpp>
 #include "instanceImpl.hpp"
-#include "../resources/gpuResourcesImpl.hpp"
+#include "resources/gpuResources.hpp"
 
-#include <deque>
+#include <vector>
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
-#include <queue>
 
 namespace Volly {
+
     class Device::DeviceImpl {
         public:
 
@@ -18,16 +18,17 @@ namespace Volly {
         ~DeviceImpl();
 
         Swapchain createSwapchain(const SwapchainCreateInfo& createInfo);
+
         BufferID createBuffer(const BufferCreateInfo& createInfo);
+        void destroyBuffer();
+
+        ImageID createImage(const ImageCreateInfo& imageCreateInfo);
+        void destroyImage();
 
         private:
 
         VkDevice handle;
         PhysicalDevice physicalDevice;
         VmaAllocator vmaAllocator;
-
-        ResourcePool<Buffer> bufferPool;
-
-        std::deque<Buffer> delBufferQueue;
     };
 }

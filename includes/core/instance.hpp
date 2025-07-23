@@ -11,7 +11,11 @@ namespace Volly {
         const char* name;
         Window& window;
         uint32_t apiVersion = VK_API_VERSION_1_3;
-        bool enableValidationLayers = true;
+        #ifdef DEBUG
+            bool enableValidationLayers = true;
+        #else
+            bool enableValidationLayers = false;
+        #endif
     };
 
     struct DeviceCreateInfo {

@@ -4,7 +4,7 @@ workspace "Volly"
 project "Volly"
     kind "ConsoleApp"
     language "C++"
-    cppdialect "C++20"
+    cppdialect "C++23"
 
     targetdir "bin/%{cfg.buildcfg}"
     objdir "bin/temp"
