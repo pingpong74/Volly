@@ -4,7 +4,10 @@
 #include <stdexcept>
 
 #ifdef DEBUG
-    #define VK_CHECK(name, err) if(name != VK_SUCCESS) throw std::runtime_error(err);
+    #define VK_CHECK(name, err) if(name != VK_SUCCESS) { \
+        throw std::runtime_error(err); \
+    } \
+
 #else
     #define VK_CHECK(name, err) name;
 #endif

@@ -1,9 +1,11 @@
 #include <core/device.hpp>
 #include <core/swapchain.hpp>
 #include <resources/gpuResources.hpp>
+#include <pipeline/pipelineManager.hpp>
 #include <voxyConfig.hpp>
 
 #include "../resources/gpuResourcesImpl.hpp"
+#include "../pipeline/pipelineManagerImpl.hpp"
 #include "deviceImpl.hpp"
 #include "instanceImpl.hpp"
 #include "swapchainImpl.hpp"
@@ -111,24 +113,22 @@ Volly::Swapchain Volly::Device::DeviceImpl::createSwapchain(const SwapchainCreat
 }
 
 Volly::BufferID Volly::Device::DeviceImpl::createBuffer(const BufferCreateInfo& createInfo) {
-    VkBufferCreateInfo bufferCreateInfo = {
-        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-        .pNext = nullptr,
-        .flags   = createInfo.createFlags.flags,
-        .size = createInfo.size,
-        .usage = createInfo.usageFlags.flags,
-        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
-        .queueFamilyIndexCount = 0,
-        .pQueueFamilyIndices = nullptr,
-    };
+    VkBufferCreateInfo bufferCreateInfo = {};
+    bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferCreateInfo.pNext = nullptr;
+    bufferCreateInfo.flags   = createInfo.createFlags.flags,
+    bufferCreateInfo.size = createInfo.size,
+    bufferCreateInfo.usage = createInfo.usageFlags.flags,
+    bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    bufferCreateInfo.queueFamilyIndexCount = 0;
+    bufferCreateInfo.pQueueFamilyIndices = nullptr;
 
-    VmaAllocationCreateInfo allocInfo = {
-        .flags = createInfo.allocationFlags.flags,
-        .usage = createInfo.memoryUsage.usage,
-        .requiredFlags = 0,
-        .preferredFlags = 0,
-        .pool = VK_NULL_HANDLE,
-    };
+    VmaAllocationCreateInfo allocInfo = {};
+    allocInfo.flags = createInfo.allocationFlags.flags;
+    allocInfo.usage = createInfo.memoryUsage.usage;
+    allocInfo.requiredFlags = 0;
+    allocInfo.preferredFlags = 0;
+    allocInfo.pool = VK_NULL_HANDLE;
 
     std::shared_ptr<Buffer> bufferImpl = std::make_shared<Buffer>(bufferCreateInfo, allocInfo, vmaAllocator);
 
@@ -140,4 +140,17 @@ Volly::ImageID Volly::Device::DeviceImpl::createImage(const ImageCreateInfo& cre
     imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageCreateInfo.extent = {createInfo.width, createInfo.height, 1};
     imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+    VmaAllocatorCreateInfo allocInfo{};
+}
+
+Volly::PipelineManager Volly::Device::DeviceImpl::createPipelineManager(const PipelineManagerCreateInfo& pipelineManagerCreateInfo) {
+    VkPipelineCacheCreateInfo cacheCreateInfo = {};
+
+    VkPipelineCache cache;
+    //VK_CHECK(vkCreatePipelineCache(handle, &cacheCreateInfo, nullptr, &cache), "Failed to create pipeline cache")
+
+    std::unique_ptr<PipelineManager::PipelineManagerImpl> pipelineManagerImpl = std::make_unique<PipelineManager::PipelineManagerImpl>(cache, handle, pipelineManagerCreateInfo.shaderDirectory);
+
+    return PipelineManager(std::move(pipelineManagerImpl));
 }

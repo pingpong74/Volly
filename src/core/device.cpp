@@ -11,7 +11,7 @@ Volly::AllocationCreateFlags Volly::AllocationCreateFlags::operator|(const Volly
     return {flags | other.flags};
 }
 
-Volly::Device::Device(std::unique_ptr<Volly::Device::DeviceImpl> impl): impl(std::move(impl)) {}
+Volly::Device::Device(std::unique_ptr<DeviceImpl> impl): impl(std::move(impl)) {}
 Volly::Device::Device(Device&& other) noexcept : impl(std::move(other.impl)) {}
 
 Volly::Device& Volly::Device::operator=(Device&& other) noexcept {
@@ -31,4 +31,8 @@ Volly::BufferID Volly::Device::createBuffer(const BufferCreateInfo&& createInfo)
 
 Volly::ImageID Volly::Device::createImage(const ImageCreateInfo&& createInfo) {
     return impl->createImage(createInfo);
+}
+
+Volly::PipelineManager Volly::Device::createPipelineManager(const PipelineManagerCreateInfo&& createInfo) {
+    return impl->createPipelineManager(createInfo);
 }

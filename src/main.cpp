@@ -1,4 +1,3 @@
-#include "core/device.hpp"
 #include <volly.hpp>
 
 int main() {
@@ -7,7 +6,7 @@ int main() {
     Volly::Instance instance = Volly::Instance::create({
         .name = "Oinke Instance",
         .window = window,
-        .enableValidationLayers = false
+        .enableValidationLayers = true,
     });
 
     Volly::Device device = instance.createDevice({
@@ -25,5 +24,9 @@ int main() {
         .usageFlags = Volly::transferSrc ,
         .memoryUsage = Volly::preferAuto,
         .allocationFlags = Volly::createMapped | Volly::sequenctialWriteBit,
+    });
+
+    Volly::PipelineManager pipelineManager = device.createPipelineManager({
+        .shaderDirectory = "compiledShaders/",
     });
 }

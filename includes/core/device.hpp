@@ -1,5 +1,6 @@
 #pragma once
 
+#include "pipeline/pipelineManager.hpp"
 #include "resources/gpuResources.hpp"
 #include "voxyConfig.hpp"
 #include <core/instance.hpp>
@@ -10,7 +11,7 @@
 namespace Volly {
 
     struct SwapchainCreateInfo {
-        const char* name;
+        const char* name = nullptr;
         VkSurfaceKHR surface;
         uint32_t width = initialWidth;
         uint32_t height = initialHeight;
@@ -43,7 +44,6 @@ namespace Volly {
 
     struct AllocationCreateFlags {
         VmaAllocationCreateFlags flags;
-
         AllocationCreateFlags operator|(const AllocationCreateFlags& other) const noexcept;
     };
 
@@ -54,7 +54,7 @@ namespace Volly {
     static constexpr AllocationCreateFlags createNeverAllocated = {VMA_ALLOCATION_CREATE_NEVER_ALLOCATE_BIT};
 
     struct BufferCreateInfo {
-        const char* name;
+        const char* name = nullptr;
         VkDeviceSize size;
         BufferCreateFlags createFlags = { 0 };
         BufferUsageFlags usageFlags;
@@ -63,9 +63,14 @@ namespace Volly {
     };
 
     struct ImageCreateInfo {
-        const char* name;
+        const char* name = nullptr;
         uint32_t width;
         uint32_t height;
+    };
+
+    struct PipelineManagerCreateInfo {
+        const char* name = nullptr;
+        const char* shaderDirectory;
     };
 
     class Device {
@@ -84,6 +89,8 @@ namespace Volly {
 
         BufferID createBuffer(const BufferCreateInfo&& bufferCreateInfo);
         ImageID createImage(const ImageCreateInfo&& imageCreateInfo);
+
+        PipelineManager createPipelineManager(const PipelineManagerCreateInfo&& pipelineManagerCreateInfo);
 
         private:
 

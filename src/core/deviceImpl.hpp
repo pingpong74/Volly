@@ -3,6 +3,7 @@
 #include <core/device.hpp>
 #include <core/swapchain.hpp>
 #include "instanceImpl.hpp"
+#include "pipeline/pipelineManager.hpp"
 #include "resources/gpuResources.hpp"
 
 #include <vector>
@@ -24,6 +25,8 @@ namespace Volly {
 
         ImageID createImage(const ImageCreateInfo& imageCreateInfo);
         void destroyImage();
+
+        PipelineManager createPipelineManager(const PipelineManagerCreateInfo& pipelineManagerCreateInfo);
 
         private:
 
