@@ -2,11 +2,17 @@
 
 #include <volk/volk.h>
 #include <stdexcept>
+#include <print>
+
 
 #ifdef DEBUG
-    #define VK_CHECK(name, err) if(name != VK_SUCCESS) { \
-        throw std::runtime_error(err); \
-    } \
+    #define VK_CHECK(name, ...) do { \
+        VkResult result = name; \
+        if(result != VK_SUCCESS) {\
+            std::println(__VA_ARGS__); \
+            throw std::runtime_error("Fatal error reported");\
+        } \
+    } while(0);
 
 #else
     #define VK_CHECK(name, err) name;

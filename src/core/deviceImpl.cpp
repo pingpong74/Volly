@@ -105,7 +105,7 @@ Volly::Swapchain Volly::Device::DeviceImpl::createSwapchain(const SwapchainCreat
 	}
 
 	VkSwapchainKHR swapchain;
-	VK_CHECK(vkCreateSwapchainKHR(handle, &createInfo, nullptr, &swapchain), "Failed to create swapchain")
+	VK_CHECK(vkCreateSwapchainKHR(handle, &createInfo, nullptr, &swapchain), "Failed to create swapchain named")
 
 	std::unique_ptr<Volly::Swapchain::SwapchainImpl> swapchainImpl = std::make_unique<Volly::Swapchain::SwapchainImpl>(swapchain, handle);
 
@@ -146,8 +146,9 @@ Volly::ImageID Volly::Device::DeviceImpl::createImage(const ImageCreateInfo& cre
 
 Volly::PipelineManager Volly::Device::DeviceImpl::createPipelineManager(const PipelineManagerCreateInfo& pipelineManagerCreateInfo) {
     VkPipelineCacheCreateInfo cacheCreateInfo = {};
+    cacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 
-    VkPipelineCache cache;
+    VkPipelineCache cache = VK_NULL_HANDLE;
     //VK_CHECK(vkCreatePipelineCache(handle, &cacheCreateInfo, nullptr, &cache), "Failed to create pipeline cache")
 
     std::unique_ptr<PipelineManager::PipelineManagerImpl> pipelineManagerImpl = std::make_unique<PipelineManager::PipelineManagerImpl>(cache, handle, pipelineManagerCreateInfo.shaderDirectory);

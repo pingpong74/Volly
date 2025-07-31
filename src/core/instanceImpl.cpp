@@ -12,6 +12,7 @@
 #include <vector>
 #include <iostream>
 #include <set>
+#include <vulkan/vulkan_core.h>
 
 Volly::Instance::InstanceImpl::InstanceImpl(const Volly::InstanceCreateInfo& instanceCreateInfo) {
     VK_CHECK(volkInitialize(), "Failed to initialize volk")
@@ -192,8 +193,6 @@ Volly::QueueFamilyIndices Volly::QueueFamilyIndices::findQueueFamilies(VkPhysica
     for(const auto& properties : queueFamilyProperties) {
         VkBool32 presetationQueuePresent = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presetationQueuePresent);
-
-        std::cout << i << " " <<  properties.queueCount << std::endl;
 
         if(properties.queueFlags & VK_QUEUE_GRAPHICS_BIT) queueFamily.graphicsFamily = i;
 

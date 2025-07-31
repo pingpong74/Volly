@@ -25,33 +25,33 @@ namespace Volly {
         VkBufferUsageFlags flags;
 
         BufferUsageFlags operator|(const BufferUsageFlags& other) const noexcept;
-    };
 
-    static constexpr BufferUsageFlags transferSrc = {VK_BUFFER_USAGE_TRANSFER_SRC_BIT};
-    static constexpr BufferUsageFlags transferDst = {VK_BUFFER_USAGE_TRANSFER_DST_BIT};
-    static constexpr BufferUsageFlags storageBuffer = {VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT};
-    static constexpr BufferUsageFlags indexBuffer = {VK_BUFFER_USAGE_INDEX_BUFFER_BIT};
-    static constexpr BufferUsageFlags vertexBuffer = {VK_BUFFER_USAGE_VERTEX_BUFFER_BIT};
-    static constexpr BufferUsageFlags shaderDeviceAddress = {VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT};
+        static BufferUsageFlags transferSrc;
+        static BufferUsageFlags transferDst;
+        static BufferUsageFlags storageBuffer;
+        static BufferUsageFlags indexBuffer;
+        static BufferUsageFlags vertexBuffer;
+        static BufferUsageFlags shaderDeviceAddress;
+    };
 
     struct MemoryUsage {
         VmaMemoryUsage usage;
-    };
 
-    static constexpr MemoryUsage preferAuto = {VMA_MEMORY_USAGE_AUTO};
-    static constexpr MemoryUsage preferDevice = {VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE};
-    static constexpr MemoryUsage preferHost = {VMA_MEMORY_USAGE_AUTO_PREFER_HOST};
+        static MemoryUsage preferAuto;
+        static MemoryUsage preferDevice;
+        static MemoryUsage preferHost;
+    };
 
     struct AllocationCreateFlags {
         VmaAllocationCreateFlags flags;
         AllocationCreateFlags operator|(const AllocationCreateFlags& other) const noexcept;
-    };
 
-    static constexpr AllocationCreateFlags createMapped = {VMA_ALLOCATION_CREATE_MAPPED_BIT};
-    static constexpr AllocationCreateFlags sequenctialWriteBit = {VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT};
-    static constexpr AllocationCreateFlags randomAccessBit = {VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT};
-    static constexpr AllocationCreateFlags createDedicated = {VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT};
-    static constexpr AllocationCreateFlags createNeverAllocated = {VMA_ALLOCATION_CREATE_NEVER_ALLOCATE_BIT};
+        static AllocationCreateFlags createMapped;
+        static AllocationCreateFlags sequenctialWriteBit;
+        static AllocationCreateFlags randomAccessBit;
+        static AllocationCreateFlags createDedicated;
+        static AllocationCreateFlags createNeverAllocated;
+    };
 
     struct BufferCreateInfo {
         const char* name = nullptr;

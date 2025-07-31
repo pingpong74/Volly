@@ -1,6 +1,7 @@
 #include <core/instance.hpp>
 #include <memory>
 #include <utility>
+#include <iostream>
 
 
 #include "core/device.hpp"
@@ -17,6 +18,7 @@ Volly::Instance& Volly::Instance::operator=(Instance&& other) noexcept {
 }
 
 Volly::Instance Volly::Instance::create(const Volly::InstanceCreateInfo&& instanceCreateInfo) {
+    if(instanceCreateInfo.enableValidationLayers) std::cout << "Using Validation Layers" << std::endl;
     std::unique_ptr<Volly::Instance::InstanceImpl> instanceImpl = std::make_unique<Volly::Instance::InstanceImpl>(instanceCreateInfo);
     return Instance(std::move(instanceImpl));
 }

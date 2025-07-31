@@ -1,14 +1,12 @@
 #version 460
 
-layout(location = 0) vec3 pos;
-
 layout(set = 0, binding = 0) buffer Ogga {
     uint i;
 } ogga;
 
-layout(set = 0, binding = 2) buffer Pogga {
+layout(set = 2, binding = 0) buffer Oinke {
     uint j;
-} pogga;
+} oinke;
 
 layout(set = 1, binding = 0, rgba16f) uniform image2D imageFromSet1;
 
