@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <volk/volk.h>
 #include "pipeline.hpp"
@@ -31,6 +32,8 @@ namespace Volly {
 
         GraphicsPipeline createGraphicsPipeline(const GraphicsPipelineCreateInfo&& graphicsPipelineCreateInfo);
         ComputePipeline createComputePipeline(const ComputePipelineCreateInfo&& computePipelineCreateInfo);
+
+        void writeToDescriptorSet(uint32_t setIndex, uint32_t binding);
 
         private:
 

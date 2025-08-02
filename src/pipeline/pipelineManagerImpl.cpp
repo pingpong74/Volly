@@ -83,6 +83,9 @@ Volly::PipelineManager::PipelineManagerImpl::PipelineManagerImpl(VkPipelineCache
             std::cout << "      Used by shader : " << shader << std::endl;
         }
     }
+
+    VkDescriptorPoolCreateInfo poolCreateInfo{};
+    poolCreateInfo.maxSets = sets.size();
 }
 
 

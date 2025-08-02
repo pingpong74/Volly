@@ -1,4 +1,3 @@
-#include "core/device.hpp"
 #include <volly.hpp>
 
 int main() {
