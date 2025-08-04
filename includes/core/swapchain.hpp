@@ -1,23 +1,31 @@
 #pragma once
 
-#include <memory>
+#include <volk/volk.h>
+
 namespace Volly {
+    class Device;
+
     class Swapchain {
         public:
 
-        class SwapchainImpl;
-
-        Swapchain(std::unique_ptr<SwapchainImpl> impl);
+        Swapchain() = delete;
+        ~Swapchain();
         Swapchain(Swapchain&&) noexcept;
         Swapchain(const Swapchain&) = delete;
 
         Swapchain& operator=(Swapchain&& other) noexcept;
 
-        ~Swapchain();
-
         private:
 
-        std::unique_ptr<SwapchainImpl> impl;
+        VkSwapchainKHR handle = VK_NULL_HANDLE;
+        VkDevice device;
 
+        VkSurfaceFormatKHR format;
+        VkPresentModeKHR presetMode;
+        VkExtent2D extent;
+
+        friend class Device;
+        //Constructor for Device class to access
+        Swapchain(VkSwapchainKHR swapchain, VkDevice device);
     };
 }

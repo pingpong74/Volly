@@ -14,6 +14,8 @@ namespace Volly {
         Window(const char* windowName);
         ~Window();
 
+        Window(const Window& other) = delete;
+
         void update();
         inline bool shouldClose() { return glfwWindowShouldClose(windowPtr); }
 

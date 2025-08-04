@@ -1,12 +1,12 @@
 #include <core/swapchain.hpp>
-#include "swapchainImpl.hpp"
 
-Volly::Swapchain::Swapchain(std::unique_ptr<Volly::Swapchain::SwapchainImpl> impl): impl(std::move(impl)) {}
-Volly::Swapchain::Swapchain(Volly::Swapchain&& other) noexcept : impl(std::move(other.impl)) {}
+Volly::Swapchain::Swapchain(VkSwapchainKHR swapchain, VkDevice device): handle(swapchain), device(device) {}
 
+Volly::Swapchain::Swapchain(Volly::Swapchain&& other) noexcept {}
 Volly::Swapchain& Volly::Swapchain::operator=(Swapchain&& other) noexcept {
-    impl = std::move(other.impl);
     return *this;
 }
 
-Volly::Swapchain::~Swapchain() {}
+Volly::Swapchain::~Swapchain() {
+    vkDestroySwapchainKHR(device, handle, nullptr);
+}

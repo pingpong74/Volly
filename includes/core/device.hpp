@@ -1,20 +1,20 @@
 #pragma once
 
-#include "pipeline/pipelineManager.hpp"
-#include "resources/gpuResources.hpp"
-#include "voxyConfig.hpp"
+#include <pipeline/pipelineManager.hpp>
+#include <gpuResources.hpp>
+#include <syncResources.hpp>
 #include <core/instance.hpp>
 #include <core/swapchain.hpp>
-#include <memory>
 #include <vma/vk_mem_alloc.h>
+#include <volk/volk.h>
 
 namespace Volly {
 
     struct SwapchainCreateInfo {
         const char* name = nullptr;
         VkSurfaceKHR surface;
-        uint32_t width = initialWidth;
-        uint32_t height = initialHeight;
+        uint32_t width = 800;
+        uint32_t height = 600;
     };
 
     struct BufferCreateFlags {
@@ -75,25 +75,28 @@ namespace Volly {
 
     class Device {
         public:
-        class DeviceImpl;
 
-        Device(std::unique_ptr<DeviceImpl> devImpl);
-        Device(Device&&) noexcept;
-        Device(const Device&) = delete;
-
-        Device& operator=(Device&& other) noexcept;
-
+        Device() = delete;
         ~Device();
 
-        Swapchain createSwapchain(const SwapchainCreateInfo&& swapchainCreateInfo);
+        Device (const Device& other) = delete;
+        Device (const Device&& other);
 
-        BufferID createBuffer(const BufferCreateInfo&& bufferCreateInfo);
-        ImageID createImage(const ImageCreateInfo&& imageCreateInfo);
+        Swapchain createSwapchain(const SwapchainCreateInfo& swapchainCreateInfo);
 
-        PipelineManager createPipelineManager(const PipelineManagerCreateInfo&& pipelineManagerCreateInfo);
+        BufferID createBuffer(const BufferCreateInfo& bufferCreateInfo);
+        ImageID createImage(const ImageCreateInfo& imageCreateInfo);
+
+        PipelineManager createPipelineManager(const PipelineManagerCreateInfo& pipelineManagerCreateInfo);
 
         private:
 
-        std::unique_ptr<DeviceImpl> impl;
+        VkDevice handle = VK_NULL_HANDLE;
+        PhysicalDevice physicalDevice;
+        VmaAllocator vmaAllocator = VK_NULL_HANDLE;
+
+        friend class Instance;
+        //Constructor for the instance class only
+        Device(VkInstance instance, VkDevice device, PhysicalDevice physicalDevice);
     };
 }

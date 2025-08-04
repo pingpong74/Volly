@@ -1,20 +1,16 @@
 #pragma once
 
-#include <memory>
+#include <volk/volk.h>
+
 namespace Volly {
 
     class GraphicsPipeline {
-        public:
 
-        class GraphicsPipelineImpl;
     };
 
     class ComputePipeline {
         public:
 
-        class ComputePipelineImpl;
-
-        ComputePipeline(std::unique_ptr<ComputePipelineImpl> devImpl);
         ComputePipeline(ComputePipeline&&) noexcept;
         ComputePipeline(const ComputePipeline&) = delete;
 
@@ -24,6 +20,11 @@ namespace Volly {
 
         private:
 
-        std::unique_ptr<ComputePipelineImpl> impl;
+        VkDevice device;
+        VkPipeline handle = VK_NULL_HANDLE;
+
+        friend class PipelineManager;
+        //Constructor for pipeline manager
+        ComputePipeline(VkDevice device, VkPipeline handle);
     };
 }

@@ -3,7 +3,7 @@
 int main() {
     Volly::Window window("Oinke Poinke");
 
-    Volly::Instance instance = Volly::Instance::create({
+    Volly::Instance instance({
         .name = "Oinke Instance",
         .window = window,
     });
@@ -15,14 +15,6 @@ int main() {
     Volly::Swapchain swapchain = device.createSwapchain({
         .name = "Dooinke swapchian",
         .surface = instance.getSurface(),
-    });
-
-    Volly::BufferID id = device.createBuffer({
-        .name = "Test Buffer",
-        .size = 100,
-        .usageFlags = Volly::BufferUsageFlags::transferDst ,
-        .memoryUsage = Volly::MemoryUsage::preferAuto,
-        .allocationFlags = Volly::AllocationCreateFlags::createMapped | Volly::AllocationCreateFlags::sequenctialWriteBit,
     });
 
     Volly::PipelineManager pipelineManager = device.createPipelineManager({
